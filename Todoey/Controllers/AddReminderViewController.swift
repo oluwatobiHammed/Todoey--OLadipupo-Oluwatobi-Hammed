@@ -16,7 +16,7 @@ class AddReminderViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var timePicker: UIDatePicker!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     var newCategory: Category?
-    
+    var reminder: Reminder?
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -71,32 +71,24 @@ class AddReminderViewController: UIViewController, UITextFieldDelegate {
         
         if sender as AnyObject? === saveButton {
               let name = reminderTextField.text!
-              let time = timePicker.date
+              var time = timePicker.date
               let color = UIColor.randomFlat().hexValue()
               let timeInterval = floor(time.timeIntervalSinceReferenceDate/60)*60
-              //time = NSDate(timeIntervalSinceReferenceDate: timeInterval) as Date
+              time = NSDate(timeIntervalSinceReferenceDate: timeInterval) as Date
+              
+              // build notification
             
-            //let cat = CategoryViewController()
             
-         
-            
-            //print("time",time)
-               // build notification
-               let notification = UNUserNotificationCenter.current()
-               let content = UNMutableNotificationContent()
-               content.title = "Reminder"
-               content.body = "Don't forget to \(name)!"
-               content.sound = .default
-               
-               let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: true)
-               let request = UNNotificationRequest(identifier: "Reminder", content: content, trigger: trigger)
-               notification.add(request) { (error) in
-                if error != nil {
-                    print("Error = \(error?.localizedDescription ?? "error local notification")")
-                }
-            }
-
-           newCategory = Category(name: name, colour: color, time: time)
+              let notification = UILocalNotification()
+              notification.alertTitle = "Reminder"
+              notification.alertBody = "Don't forget to \(name)!"
+              notification.fireDate = time
+              notification.soundName = UILocalNotificationDefaultSoundName
+              
+              UIApplication.shared.scheduleLocalNotification(notification)
+           
+              newCategory = Category(name: name, colour: color, time: time)
+              reminder = Reminder(notification: notification)
         }
     }
 }

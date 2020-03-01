@@ -8,13 +8,12 @@
 
 import Foundation
 import RealmSwift
-import UserNotifications
 
 class Category: Object {
     @objc dynamic var name: String? = ""
     @objc dynamic var colour: String? = ""
     @objc dynamic var time: Date? = nil
-    @objc dynamic var notification: Date? = nil
+    
     let items = List<Item>()
     
     enum CodingKeys: String, CodingKey{
